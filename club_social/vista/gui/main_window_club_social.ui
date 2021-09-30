@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1028</width>
-    <height>510</height>
+    <height>535</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="label_banner">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -62,10 +62,10 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QListView" name="listView"/>
+           <widget class="QListView" name="listview_socios"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pbutton_afiliar_socio">
             <property name="text">
              <string>Afiliar socio</string>
             </property>
@@ -106,7 +106,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLineEdit" name="lineEdit"/>
+              <widget class="QLineEdit" name="lineedit_cedula"/>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_3">
@@ -116,13 +116,13 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEdit_2"/>
+              <widget class="QLineEdit" name="lineedit_nombre"/>
              </item>
             </layout>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="pbutton_registrar_consumo">
             <property name="text">
              <string>Registrar consumo</string>
             </property>
@@ -153,10 +153,10 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="QListView" name="listView_2"/>
+              <widget class="QListView" name="listview_facturas"/>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="pbutton_pagar_factura">
                <property name="text">
                 <string>Pagar factura</string>
                </property>
@@ -172,10 +172,10 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="QListWidget" name="listWidget"/>
+              <widget class="QListWidget" name="listwidget_autorizados"/>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="pbutton_agregar_autorizado">
                <property name="text">
                 <string>Agregar autorizado</string>
                </property>
