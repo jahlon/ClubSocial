@@ -54,6 +54,9 @@ class Socio:
         factura = Factura(concepto, valor, autorizado)
         self.facturas.append(factura)
 
+    def __str__(self):
+        return f"({self.cedula}) {self.nombre}"
+
 
 class Club:
     """
@@ -107,6 +110,7 @@ class Club:
         if socio is None:
             socio = Socio(cedula_socio, nombre_socio)
             self.socios[cedula_socio] = socio
+            return socio
         else:
             raise SocioExistenteError(cedula_socio, f"Ya existe un socio con la cédula {cedula_socio}")
 
