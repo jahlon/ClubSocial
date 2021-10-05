@@ -1,17 +1,20 @@
 import sys
 
 from PySide2.QtCore import QRegExp
-from PySide2.QtGui import QRegExpValidator, QIntValidator
+from PySide2.QtGui import QRegExpValidator, QIntValidator, QStandardItemModel, QStandardItem
 from PySide2.QtWidgets import QMainWindow, QApplication, QDialog, QMessageBox
 
+from club_social.mundo.errores import SocioExistenteError
+from club_social.mundo.mundo import Club
 from club_social.vista.gui.ui_dialogo_afiliar_socio import Ui_DialogAfiliarSocio
 from club_social.vista.gui.ui_dialogo_registrar_consumo import Ui_DialogRegistrarConsumo
 from club_social.vista.gui.ui_main_window_club_social import Ui_MainWindow
 
 
 class VentanaClubSocial(QMainWindow):
-    def __init__(self):
+    def __init__(self, club: Club):
         QMainWindow.__init__(self)
+        self.club = club
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self._configurar()
@@ -22,6 +25,8 @@ class VentanaClubSocial(QMainWindow):
         self.ui.pbutton_afiliar_socio.clicked.connect(self.abrir_dialogo_afiliar_socio)
         self.ui.pbutton_registrar_consumo.clicked.connect(self.abrir_dialogo_registrar_consumo)
 
+        self.ui.listview_socios.setModel(QStandardItemModel())
+
     def abrir_dialogo_afiliar_socio(self):
         dialogo = DialogoAfiliarSocio(self)
         resp = dialogo.exec_()
@@ -29,9 +34,28 @@ class VentanaClubSocial(QMainWindow):
             cedula = dialogo.ui.lineedit_cedula.text()
             nombre = dialogo.ui.lineedit_nombre.text()
 
+            try:
+                socio = self.club.afiliar_socio_al_club(cedula, nombre)
+            except SocioExistenteError as err:
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Error afiliando socio")
+                msg_box.setIcon(QMessageBox.Critical)
+                msg_box.setText(err.msg)
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
+            else:
+                self.actualizar_lista_socios(socio)
+
+    def actualizar_lista_socios(self, socio):
+        item = QStandardItem(str(socio))
+        item.setEditable(False)
+        item.socio = socio
+        self.ui.listview_socios.model().appendRow(item)
+
     def abrir_dialogo_registrar_consumo(self):
         dialogo = DialogoRegistrarConsumo(self)
         resp = dialogo.exec_()
+
 
 class DialogoAfiliarSocio(QDialog):
     def __init__(self, parent=None):
@@ -64,8 +88,20 @@ class DialogoRegistrarConsumo(QDialog):
         validador = QIntValidator(0, 100000000)
         self.ui.lineedit_valor.setValidator(validador)
 
+    def accept(self) -> None:
+        if self.ui.lineedit_detalle.text() != "" and self.ui.lineedit_valor.text() != "":
+            super().accept()
+        else:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Error de validación")
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setText("Debe ingresar todos los campos obligatorios.")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = VentanaClubSocial()
+    club = Club()
+    window = VentanaClubSocial(club)
     sys.exit(app.exec_())
