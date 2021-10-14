@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_club_socialngaZsh.ui'
+## Form generated from reading UI file 'main_window_club_socialQYpzxt.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -12,6 +12,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+import club_social.vista.gui.recursos_club
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -31,7 +32,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.label_banner.sizePolicy().hasHeightForWidth())
         self.label_banner.setSizePolicy(sizePolicy)
         self.label_banner.setStyleSheet(u"background-color: rgb(0, 255, 0);")
-        self.label_banner.setPixmap(QPixmap(u"img/banner_club.jpg"))
+        self.label_banner.setPixmap(QPixmap(u":/img/img/banner_club.jpg"))
 
         self.verticalLayout.addWidget(self.label_banner)
 

@@ -42,7 +42,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>img/banner_club.jpg</pixmap>
+       <pixmap resource="recursos_club.qrc">:/img/img/banner_club.jpg</pixmap>
       </property>
      </widget>
     </item>
@@ -201,6 +201,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="recursos_club.qrc"/>
+ </resources>
  <connections/>
 </ui>
