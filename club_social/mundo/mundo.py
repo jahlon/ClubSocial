@@ -1,5 +1,6 @@
 from club_social.mundo.errores import SocioNoExistenteError, SocioExistenteError
 
+import pickle
 
 class Factura:
 
@@ -69,26 +70,6 @@ class Club:
     def __init__(self):
         self.socios = dict()
 
-        # TODO: Borrar el siguiente código
-        self.afiliar_socio_al_club("123", "Maria Cardona")
-        self.afiliar_socio_al_club("456", "Pedro Pérez")
-        self.afiliar_socio_al_club("789", "Juan Gómez")
-
-        self.registrar_consumo_a_socio("123", "Almuerzo Ejecutivo", 12500)
-        self.registrar_consumo_a_socio("123", "Cerveza", 8000)
-        self.registrar_consumo_a_socio("456", "Desayuno Americano", 10000)
-        self.registrar_consumo_a_socio("456", "Papitas de Limón", 2000)
-        self.registrar_consumo_a_socio("789", "Gaseosa", 2000)
-        self.registrar_consumo_a_socio("789", "Almuerzo", 17000)
-
-        self.registrar_autorizado_por_socio("123", "Simon")
-        self.registrar_autorizado_por_socio("123", "Carlota")
-        self.registrar_autorizado_por_socio("456", "Fernanda")
-        self.registrar_autorizado_por_socio("456", "Luisa")
-        self.registrar_autorizado_por_socio("789", "Carlos")
-        self.registrar_autorizado_por_socio("789", "Jerónimo")
-
-
     def registrar_autorizado_por_socio(self, cedula_socio: str, nombre_autorizado: str):
         """
 
@@ -140,3 +121,12 @@ class Club:
             socio.agregar_factura(concepto, valor, autorizado)
         else:
             raise SocioNoExistenteError(cedula_socio, f"No existe un socio con la cédula {cedula_socio}")
+
+    def guardar(self, archivo):
+        with open(archivo, "wb") as f:
+            pickle.dump(self, f)
+
+    def cargar(self, archivo):
+        with open(archivo, "rb") as f:
+            club = pickle.load(f)
+            self.socios = club.socios
