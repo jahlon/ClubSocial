@@ -2,7 +2,7 @@ import sys
 
 from PySide2.QtCore import QRegExp
 from PySide2.QtGui import QRegExpValidator, QIntValidator, QStandardItemModel, QStandardItem
-from PySide2.QtWidgets import QMainWindow, QApplication, QDialog, QMessageBox
+from PySide2.QtWidgets import QMainWindow, QApplication, QDialog, QMessageBox, QInputDialog
 
 from club_social.mundo.errores import SocioExistenteError, SocioNoExistenteError
 from club_social.mundo.mundo import Club
@@ -24,6 +24,8 @@ class VentanaClubSocial(QMainWindow):
     def _configurar(self):
         self.ui.pbutton_afiliar_socio.clicked.connect(self.abrir_dialogo_afiliar_socio)
         self.ui.pbutton_registrar_consumo.clicked.connect(self.abrir_dialogo_registrar_consumo)
+        self.ui.pbutton_agregar_autorizado.clicked.connect(self.agregar_autorizado)
+        self.ui.pbutton_pagar_factura.clicked.connect(self.pagar_factura)
 
         self.ui.listview_socios.selectionChanged = self.seleccionar_socio
 
@@ -35,6 +37,63 @@ class VentanaClubSocial(QMainWindow):
         # TODO: Borrar este código
         for socio in self.club.socios.values():
             self.actualizar_lista_socios(socio)
+
+    def pagar_factura(self):
+        indexes_facturas = self.ui.listview_facturas.selectedIndexes()
+        if len(indexes_facturas) == 0:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Error")
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setText("Debe seleccionar una factura para pagar")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+        else:
+            item_factura = self.ui.listview_facturas.model().itemFromIndex(indexes_facturas[0])
+            indexes_socios = self.ui.listview_socios.selectedIndexes()
+            item_socio = self.ui.listview_socios.model().itemFromIndex(indexes_socios[0])
+            factura = item_factura.factura
+            cedula_socio = item_socio.socio.cedula
+
+            try:
+                self.club.pagar_factura(cedula_socio, factura)
+            except SocioNoExistenteError as err:
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Error pagando factura")
+                msg_box.setIcon(QMessageBox.Critical)
+                msg_box.setText(err.msg)
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
+            else:
+                self.actualizar_lista_de_facturas()
+
+    def agregar_autorizado(self):
+        indexes = self.ui.listview_socios.selectedIndexes()
+        if len(indexes) == 0:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Error")
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setText("Debe seleccionar un socio para agregarle un autorizado")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+        else:
+            resp = QInputDialog.getText(self, "Agregar autorizado", "Nombre del autorizado:")
+            if resp[1]:
+                item = self.ui.listview_socios.model().itemFromIndex(indexes[0])
+                cedula_socio = item.socio.cedula
+                nombre_autorizado = resp[0]
+
+                try:
+                    self.club.registrar_autorizado_por_socio(cedula_socio, nombre_autorizado)
+                except SocioNoExistenteError as err:
+                    msg_box = QMessageBox(self)
+                    msg_box.setWindowTitle("Error agregando autorizado")
+                    msg_box.setIcon(QMessageBox.Critical)
+                    msg_box.setText(err.msg)
+                    msg_box.setStandardButtons(QMessageBox.Ok)
+                    msg_box.exec_()
+                else:
+                    self.actualizar_lista_autorizados()
+
 
     def abrir_dialogo_afiliar_socio(self):
         dialogo = DialogoAfiliarSocio(self)
