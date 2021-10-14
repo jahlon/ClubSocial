@@ -12,11 +12,15 @@ from club_social.vista.gui.ui_main_window_club_social import Ui_MainWindow
 
 
 class VentanaClubSocial(QMainWindow):
+
+    ARCHIVO = "datos.club"
+
     def __init__(self, club: Club):
         QMainWindow.__init__(self)
         self.club = club
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.club.cargar(VentanaClubSocial.ARCHIVO)
         self._configurar()
         self.setFixedSize(1028, 600)
         self.show()
@@ -34,9 +38,13 @@ class VentanaClubSocial(QMainWindow):
         # sel_model = self.ui.listview_socios.selectionModel()
         # sel_model.selectionChanged.connect(self.seleccionar_socio)
 
-        # TODO: Borrar este código
+        self.closeEvent = self.cerrar_ventana
+
         for socio in self.club.socios.values():
             self.actualizar_lista_socios(socio)
+
+    def cerrar_ventana(self, event):
+        self.club.guardar(VentanaClubSocial.ARCHIVO)
 
     def pagar_factura(self):
         indexes_facturas = self.ui.listview_facturas.selectedIndexes()
@@ -226,10 +234,3 @@ class DialogoRegistrarConsumo(QDialog):
             msg_box.setText("Debe ingresar todos los campos obligatorios.")
             msg_box.setStandardButtons(QMessageBox.Ok)
             msg_box.exec_()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    club = Club()
-    window = VentanaClubSocial(club)
-    sys.exit(app.exec_())
